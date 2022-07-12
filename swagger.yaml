@@ -7,7 +7,7 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT
 servers:
-  - url: ''
+  - url: 'https://dd-crm-app.herokuapp.com/'
 tags:
   - name: Contacts
     description: Contacts endpoints
