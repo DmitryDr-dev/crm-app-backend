@@ -7,6 +7,7 @@ import { inject, injectable } from 'inversify';
 import { APP_TYPES } from './common/ioc/app-bindings';
 import { ILoggerService } from './app-modules/logger';
 import { IErrorHandlerService } from './app-modules/error/error-handler';
+import { IMongoDbConnectionService } from './app-modules/database/mongodb';
 
 @injectable()
 export class App {
@@ -18,6 +19,8 @@ export class App {
     @inject(APP_TYPES.ILoggerService) private logger: ILoggerService,
     @inject(APP_TYPES.IErrorhandlerService)
     private errorHandler: IErrorHandlerService,
+    @inject(APP_TYPES.IMongoDbConnectionService)
+    private mongoDbService: IMongoDbConnectionService,
   ) {
     this.app = express();
     this.port = parseInt(process.env.PORT as string, 2) || 3000;
@@ -35,6 +38,8 @@ export class App {
 
   public async runServer(): Promise<void> {
     this.useMiddlewares();
+    this.useErrorHandler();
+    await this.mongoDbService.connectDb();
 
     this.server = this.app
       .listen(this.port)
