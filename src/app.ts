@@ -8,6 +8,8 @@ import { APP_TYPES } from './common/ioc/app-bindings';
 import { ILoggerService } from './app-modules/logger';
 import { IErrorHandlerService } from './app-modules/error/error-handler';
 import { IMongoDbConnectionService } from './app-modules/database/mongodb';
+import { CONTACTS_TYPES } from './common/ioc/contact-bindings';
+import { ContactsController } from './entities/contacts/controller';
 
 @injectable()
 export class App {
@@ -21,6 +23,8 @@ export class App {
     private errorHandler: IErrorHandlerService,
     @inject(APP_TYPES.IMongoDbConnectionService)
     private mongoDbService: IMongoDbConnectionService,
+    @inject(CONTACTS_TYPES.IContactsController)
+    private contactsController: ContactsController,
   ) {
     this.app = express();
     this.port = parseInt(process.env.PORT as string, 2) || 3000;
@@ -32,13 +36,22 @@ export class App {
     this.app.use(express.urlencoded({ extended: false }));
   }
 
+  private useRoutes(): void {
+    this.app.use(
+      '/contacts',
+      this.contactsController.router.bind(this.contactsController),
+    );
+  }
+
   private useErrorHandler(): void {
     this.app.use(this.errorHandler.catch.bind(this.errorHandler));
   }
 
   public async runServer(): Promise<void> {
     this.useMiddlewares();
+    this.useRoutes();
     this.useErrorHandler();
+
     await this.mongoDbService.connectDb();
 
     this.server = this.app
