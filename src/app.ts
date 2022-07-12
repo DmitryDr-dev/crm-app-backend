@@ -30,7 +30,7 @@ export class App {
     private contactsController: ContactsController,
   ) {
     this.app = express();
-    this.port = parseInt(process.env.PORT as string, 2) || 3000;
+    this.port = parseInt(process.env.PORT as string, 10) || 3000;
   }
 
   private useMiddlewares(): void {
