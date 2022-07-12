@@ -6,6 +6,7 @@ import cors from 'cors';
 import { inject, injectable } from 'inversify';
 import { APP_TYPES } from './common/ioc/app-bindings';
 import { ILoggerService } from './app-modules/logger';
+import { IErrorHandlerService } from './app-modules/error/error-handler';
 
 @injectable()
 export class App {
@@ -15,6 +16,8 @@ export class App {
 
   constructor(
     @inject(APP_TYPES.ILoggerService) private logger: ILoggerService,
+    @inject(APP_TYPES.IErrorhandlerService)
+    private errorHandler: IErrorHandlerService,
   ) {
     this.app = express();
     this.port = parseInt(process.env.PORT as string, 2) || 3000;
@@ -24,6 +27,10 @@ export class App {
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
+  }
+
+  private useErrorHandler(): void {
+    this.app.use(this.errorHandler.catch.bind(this.errorHandler));
   }
 
   public async runServer(): Promise<void> {
