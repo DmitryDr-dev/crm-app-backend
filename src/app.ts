@@ -10,6 +10,9 @@ import { IErrorHandlerService } from './app-modules/error/error-handler';
 import { IMongoDbConnectionService } from './app-modules/database/mongodb';
 import { CONTACTS_TYPES } from './common/ioc/contact-bindings';
 import { ContactsController } from './entities/contacts/controller';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+const swaggerDocument = YAML.load('./swagger.yaml');
 
 @injectable()
 export class App {
@@ -40,6 +43,11 @@ export class App {
     this.app.use(
       '/contacts',
       this.contactsController.router.bind(this.contactsController),
+    );
+    this.app.use(
+      '/api-docs',
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerDocument),
     );
   }
 
