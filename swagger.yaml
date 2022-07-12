@@ -1,0 +1,346 @@
+openapi: 3.0.1
+info:
+  version: 0.0.1
+  title: CRM App
+  description: API Documentation for CRM App [Backend github repository](https://github.com/DmitryDr-dev/crm-app-backend)
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: ''
+tags:
+  - name: Contacts
+    description: Contacts endpoints
+paths:
+  /contacts:
+    get:
+      tags:
+        - Contacts
+      summary: Get all contacts for current user
+      security:
+        - BearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetContactsResponse'
+        '404':
+          description: Invalid user / Invalid session
+          content: {}
+    post:
+      tags:
+        - Contacts
+      summary: Create new contact
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Contact object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateContactRequest'
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateContactResponse'
+        '400':
+          description: Bad request (invalid request body or id) / No token provided
+          content: {}
+  /contacts/{contactId}:
+    get:
+      parameters:
+        - name: contactId
+          in: path
+          description: Contact Id
+          required: true
+          schema:
+            type: string
+      tags:
+        - Contacts
+      summary: Get contact by id
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetContactByIdResponse'
+        '404':
+          description: Contact not found
+          content: {}
+    patch:
+      parameters:
+        - name: contactId
+          in: path
+          description: Contact Id
+          required: true
+          schema:
+            type: string
+      tags:
+        - Contacts
+      summary: Update existing contact
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Contact object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContactRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateContactResponse'
+        '404':
+          description: Contact not found
+          content: {}
+    delete:
+      parameters:
+        - name: contactId
+          in: path
+          description: Contact Id
+          required: true
+          schema:
+            type: string
+      tags:
+        - Contacts
+      summary: 'Delete contact by id '
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteContactResponse'
+        '404':
+          description: Contact not found
+          content: {}
+components:
+  schemas:
+    GetContactsResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ContactObjectBasic'
+    GetContactByIdResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ContactObjectBasic'
+    CreateContactRequest:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ContactObjectBasicRequired'
+    CreateContactResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ContactObjectBasic'
+    UpdateContactRequest:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ContactObjectBasic'
+    UpdateContactResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ContactObjectBasic'
+    DeleteContactResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ContactObjectBasic'
+    ContactObjectBasicRequired:
+      required:
+        - firstName
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Unique contact's id
+          example: 62c9973dc10addae312d41f3
+        firstName:
+          type: string
+          description: Contact's first name
+          example: John
+        lastName:
+          type: string
+          description: Contact's last name
+          example: Smith
+        note:
+          type: string
+          description: Notes about current contact
+          example: Matt's brother
+        website:
+          type: string
+          description: Website address
+          example: https://username.com
+        workData:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkData'
+        emailData:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailData'
+        phoneData:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneData'
+        addressData:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressData'
+    ContactObjectBasic:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Unique contact's id
+          example: 62c9973dc10addae312d41f3
+        firstName:
+          type: string
+          description: Contact's first name
+          example: John
+        lastName:
+          type: string
+          description: Contact's last name
+          example: Smith
+        note:
+          type: string
+          description: Notes about current contact
+          example: Matt's brother
+        website:
+          type: string
+          description: Website address
+          example: https://username.com
+        workData:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkData'
+        emailData:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailData'
+        phoneData:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneData'
+        addressData:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressData'
+    WorkData:
+      type: array
+      description: Information about work & position
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+            description: Unique work place id
+            example: 62c9973dc10addae312d41f3
+          companyName:
+            type: string
+            description: Company name
+            example: The Best Developers LLC
+          department:
+            type: string
+            description: Department name
+            example: Development Team
+          jobTitle:
+            type: string
+            description: Job Title
+            example: JavaScript Developer
+    EmailData:
+      type: array
+      description: Email information
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+            description: Unique email id
+            example: 62c9973dc10addae312d41f3
+          emailAddress:
+            type: string
+            description: Email address
+            format: email
+          emailType:
+            type: string
+            description: Email type
+            enum:
+              - personal
+              - work
+              - home
+              - other
+            example: personal
+    PhoneData:
+      type: array
+      items:
+        type: object
+        description: Phone information
+        properties:
+          _id:
+            type: string
+            description: Unique phone id
+            example: 62c9973dc10addae312d41f3
+          phoneNumber:
+            type: string
+            description: Phone number
+            example: '+1825756995'
+          phoneType:
+            type: string
+            description: Phone type
+            enum:
+              - personal
+              - work
+              - home
+              - fax
+              - workFax
+              - other
+            example: work
+    AddressData:
+      type: array
+      description: Address information
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+            description: Unique address id
+            example: 62c9973dc10addae312d41f3
+          address:
+            type: string
+            description: Street name & block No.
+            example: Sunrise Ave 65
+          city:
+            type: string
+            description: City
+            example: Los Angeles
+          region:
+            type: string
+            description: Region or state name
+            example: California
+          country:
+            type: string
+            description: Country name
+            example: USA
+          zip:
+            type: string
+            description: Postal or zip code
+            example: '15024'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
