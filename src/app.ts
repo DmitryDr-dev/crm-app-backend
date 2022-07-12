@@ -1,9 +1,11 @@
 import 'reflect-metadata';
+import 'dotenv/config';
 import express, { Express } from 'express';
 import { Server } from 'http';
 import cors from 'cors';
 import { inject, injectable } from 'inversify';
 import { APP_TYPES } from './common/ioc/app-bindings';
+import { ILoggerService } from './app-modules/logger';
 
 @injectable()
 export class App {
@@ -11,7 +13,9 @@ export class App {
   private server: Server;
   private port: number;
 
-  constructor() {
+  constructor(
+    @inject(APP_TYPES.ILoggerService) private logger: ILoggerService,
+  ) {
     this.app = express();
     this.port = parseInt(process.env.PORT as string, 2) || 3000;
   }
@@ -28,10 +32,10 @@ export class App {
     this.server = this.app
       .listen(this.port)
       .on('listening', () => {
-        console.log(`[App] Server runs on port: ${this.port}`);
+        this.logger.log(`[App] Server runs on port: ${this.port}`);
       })
       .on('error', (err) => {
-        console.error(
+        this.logger.error(
           `[App] Error occurred while starting server: ${err.message} `,
         );
       });
