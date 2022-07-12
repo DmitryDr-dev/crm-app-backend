@@ -1,26 +1,12 @@
-import express, { Request, Response, NextFunction } from 'express';
-import 'dotenv/config';
+import { Container } from 'inversify';
+import { appBindings, APP_TYPES } from './common/ioc/app-bindings';
+import { App } from './app';
 
-const PORT = process.env.PORT || 3000;
+async function bootstrap(): Promise<void> {
+  const appContainer = new Container();
+  appContainer.load(appBindings);
+  const app = appContainer.get<App>(APP_TYPES.App);
+  await app.runServer();
+}
 
-const app = express();
-
-app.listen(PORT, () => {
-  console.log(`[App] Server runs on port: ${PORT}`);
-});
-
-app.get('/test', (req: Request, res: Response) => {
-  res.status(200).json({
-    message: 'test message',
-  });
-});
-
-app.use((req: Request, res: Response) => {
-  res.status(404).json({
-    message: 'Not Found',
-  });
-});
-
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  res.status(500).json({ message: 'Internal Server Error:' });
-});
+bootstrap();
