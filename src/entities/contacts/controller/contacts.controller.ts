@@ -22,7 +22,7 @@ export class ContactsController
   constructor(
     @inject(APP_TYPES.ILoggerService) protected logger: ILoggerService,
     @inject(CONTACTS_TYPES.IContactsService)
-    protected contactsService: IContactsService,
+    private contactsService: IContactsService,
   ) {
     super(logger);
 
@@ -57,7 +57,7 @@ export class ContactsController
     ]);
   }
 
-  async getContacts(
+  public async getContacts(
     _req: Request,
     res: Response,
     next: NextFunction,
@@ -75,7 +75,7 @@ export class ContactsController
     return next(new HttpError(HttpCode.NotFound, 'Items Not Found'));
   }
 
-  async getContactById(
+  public async getContactById(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -94,7 +94,7 @@ export class ContactsController
     return next(new HttpError(HttpCode.NotFound, 'Item Not Found'));
   }
 
-  async createContact(
+  public async createContact(
     req: Request<{}, {}, CreateContactRequestDTO>,
     res: Response,
     next: NextFunction,
@@ -112,7 +112,7 @@ export class ContactsController
     return next(new HttpError(HttpCode.BadRequest, 'Bad Request'));
   }
 
-  async updateContact(
+  public async updateContact(
     req: Request<ParamsDictionary, {}, UpdateContactRequestDTO>,
     res: Response,
     next: NextFunction,
@@ -131,7 +131,7 @@ export class ContactsController
     return next(new HttpError(HttpCode.NotFound, 'Item Not Found'));
   }
 
-  async deleteContact(
+  public async deleteContact(
     req: Request,
     res: Response,
     next: NextFunction,
