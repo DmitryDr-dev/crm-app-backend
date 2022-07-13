@@ -1,2 +1,2 @@
-import { USERS_TYPES } from './users-bindings.types';
-import { usersBindings } from './users-bindings.config';
+export { USERS_TYPES } from './users-bindings.types';
+export { usersBindings } from './users-bindings.config';
