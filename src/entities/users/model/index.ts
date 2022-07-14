@@ -1,2 +1,2 @@
-import { UserModel, User } from './user.model';
-import { UserDocumentType } from './types/user-document';
+export { UserModel, User } from './user.model';
+export { UserDocumentType } from './types/user-document';
