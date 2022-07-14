@@ -3,18 +3,26 @@ import { UpdateContactRequestDTO } from '../dto/updateContact';
 import { ContactDocumentType } from '../model';
 
 export interface IContactsService {
-  getContacts: () => Promise<ContactDocumentType[] | [] | null>;
+  getContacts: (userId: string) => Promise<ContactDocumentType[] | [] | null>;
 
-  getContactById: (contactId: string) => Promise<ContactDocumentType | null>;
+  getContactById: (
+    contactId: string,
+    userId: string,
+  ) => Promise<ContactDocumentType | null>;
 
   createContact: (
     body: CreateContactRequestDTO,
+    userId: string,
   ) => Promise<ContactDocumentType | null>;
 
   updateContact: (
     contactId: string,
+    userId: string,
     body: UpdateContactRequestDTO,
   ) => Promise<ContactDocumentType | null>;
 
-  deleteContact: (contactId: string) => Promise<ContactDocumentType | null>;
+  deleteContact: (
+    contactId: string,
+    userId: string,
+  ) => Promise<ContactDocumentType | null>;
 }

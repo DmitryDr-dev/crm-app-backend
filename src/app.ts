@@ -1,17 +1,21 @@
 import 'reflect-metadata';
 import 'dotenv/config';
-import express, { Express } from 'express';
-import { Server } from 'http';
 import cors from 'cors';
+import express, { Express, Request, Response } from 'express';
+import { Server } from 'http';
 import { inject, injectable } from 'inversify';
-import { APP_TYPES } from './common/ioc/app-bindings';
-import { ILoggerService } from './app-modules/logger';
-import { IErrorHandlerService } from './app-modules/error/error-handler';
-import { IMongoDbConnectionService } from './app-modules/database/mongodb';
-import { CONTACTS_TYPES } from './common/ioc/contact-bindings';
-import { ContactsController } from './entities/contacts/controller';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
+import { IMongoDbConnectionService } from './app-modules/database/mongodb';
+import { IErrorHandlerService } from './app-modules/error/error-handler';
+import { ILoggerService } from './app-modules/logger';
+import { AuthController } from './auth/controller';
+import { APP_TYPES } from './common/ioc/app-bindings';
+import { AUTH_TYPES } from './common/ioc/auth-bindings';
+import { CONTACTS_TYPES } from './common/ioc/contact-bindings';
+import { ContactsController } from './entities/contacts/controller';
+import { HttpCode } from './lib/constants';
+
 const swaggerDocument = YAML.load('./swagger.yaml');
 
 @injectable()
@@ -28,6 +32,7 @@ export class App {
     private mongoDbService: IMongoDbConnectionService,
     @inject(CONTACTS_TYPES.IContactsController)
     private contactsController: ContactsController,
+    @inject(AUTH_TYPES.IAuthController) private authController: AuthController,
   ) {
     this.app = express();
     this.port = parseInt(process.env.PORT as string, 10) || 3000;
@@ -40,6 +45,7 @@ export class App {
   }
 
   private useRoutes(): void {
+    this.app.use('/auth', this.authController.router.bind(this.authController));
     this.app.use(
       '/contacts',
       this.contactsController.router.bind(this.contactsController),
@@ -49,6 +55,12 @@ export class App {
       swaggerUi.serve,
       swaggerUi.setup(swaggerDocument),
     );
+
+    this.app.use((_req: Request, res: Response) => {
+      res.status(HttpCode.NotFound).json({
+        message: 'Not Found',
+      });
+    });
   }
 
   private useErrorHandler(): void {
