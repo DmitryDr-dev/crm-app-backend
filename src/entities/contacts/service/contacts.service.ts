@@ -16,9 +16,11 @@ export class ContactsService implements IContactsService {
     @inject(APP_TYPES.ILoggerService) private logger: ILoggerService,
   ) {}
 
-  public async getContacts(): Promise<ContactDocumentType[] | [] | null> {
+  public async getContacts(
+    userId: string,
+  ): Promise<ContactDocumentType[] | [] | null> {
     try {
-      const contacts = await this.contactsRepository.getContacts();
+      const contacts = await this.contactsRepository.getContacts(userId);
       return contacts;
     } catch (error) {
       if (error instanceof Error) {
@@ -36,9 +38,13 @@ export class ContactsService implements IContactsService {
 
   public async getContactById(
     contactId: string,
+    userId: string,
   ): Promise<ContactDocumentType | null> {
     try {
-      const contact = await this.contactsRepository.getContactById(contactId);
+      const contact = await this.contactsRepository.getContactById(
+        contactId,
+        userId,
+      );
       return contact;
     } catch (error) {
       if (error instanceof Error) {
@@ -56,9 +62,10 @@ export class ContactsService implements IContactsService {
 
   public async createContact(
     body: CreateContactRequestDTO,
+    userId: string,
   ): Promise<ContactDocumentType | null> {
     try {
-      const contact = await this.contactsRepository.createContact(body);
+      const contact = await this.contactsRepository.createContact(body, userId);
       return contact;
     } catch (error) {
       if (error instanceof Error) {
@@ -76,11 +83,13 @@ export class ContactsService implements IContactsService {
 
   public async updateContact(
     contactId: string,
+    userId: string,
     body: UpdateContactRequestDTO,
   ): Promise<ContactDocumentType | null> {
     try {
       const contact = await this.contactsRepository.updateContact(
         contactId,
+        userId,
         body,
       );
       return contact;
@@ -100,9 +109,13 @@ export class ContactsService implements IContactsService {
 
   public async deleteContact(
     contactId: string,
+    userId: string,
   ): Promise<ContactDocumentType | null> {
     try {
-      const contact = await this.contactsRepository.deleteContact(contactId);
+      const contact = await this.contactsRepository.deleteContact(
+        contactId,
+        userId,
+      );
       return contact;
     } catch (error) {
       if (error instanceof Error) {
