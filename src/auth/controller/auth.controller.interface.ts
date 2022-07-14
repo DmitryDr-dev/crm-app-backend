@@ -8,13 +8,13 @@ export interface IAuthController {
     next: NextFunction,
   ) => ControllerResponseType;
 
-  loginUser: (
+  logInUser: (
     req: Request,
     res: Response,
     next: NextFunction,
   ) => ControllerResponseType;
 
-  logoutpUser: (
+  logOutUser: (
     req: Request,
     res: Response,
     next: NextFunction,
