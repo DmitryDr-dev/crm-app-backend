@@ -24,8 +24,6 @@ export class ErrorHandlerService implements IErrorHandlerService {
       this.logger.error(`${statusCode}: ${message}`);
 
       res.status(statusCode).json({
-        status: ResponseStatus.Error,
-        code: statusCode,
         message: message,
       });
     } else {
@@ -36,8 +34,6 @@ export class ErrorHandlerService implements IErrorHandlerService {
       );
 
       res.status(HttpCode.InternalServerError).json({
-        status: ResponseStatus.Error,
-        code: HttpCode.InternalServerError,
         message: message,
       });
     }
