@@ -1,7 +1,13 @@
-import { prop, getModelForClass, ReturnModelType } from '@typegoose/typegoose';
+import {
+  prop,
+  getModelForClass,
+  ReturnModelType,
+  Ref,
+} from '@typegoose/typegoose';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { regExpValidator } from '../../../utils/validators';
 import { REG_EXP } from '../../../lib/constants';
+import { User } from '../../users/model';
 
 enum EmailType {
   Personal = 'personal',
@@ -108,6 +114,9 @@ export class Contact extends TimeStamps {
 
   @prop()
   public website?: string;
+
+  @prop({ ref: () => User, required: true })
+  public owner: Ref<User>;
 }
 
 export const ContactModel: ReturnModelType<typeof Contact> =
