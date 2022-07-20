@@ -9,9 +9,65 @@ info:
 servers:
   - url: 'https://dd-crm-app.herokuapp.com/'
 tags:
+  - name: Auth
+    description: Auth endpoints
   - name: Contacts
     description: Contacts endpoints
 paths:
+  /auth/signup:
+    post:
+      tags:
+        - Auth
+      summary: User registration
+      requestBody:
+        description: Contact object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpUserRequest'
+      responses:
+        '201':
+          description: New user has been successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignUpUserResponse'
+        '409':
+          description: Email in use
+        '400':
+          description: Bad request (invalid request body)
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: User log in
+      requestBody:
+        description: Contact object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogInUserRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogInUserResponse'
+        '401':
+          description: Invalid Credentials
+        '400':
+          description: Bad request (invalid request body)
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: User logout
+      responses:
+        '200':
+          description: Successful operation
   /contacts:
     get:
       tags:
@@ -132,6 +188,70 @@ paths:
           content: {}
 components:
   schemas:
+    LogInUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          description: User's email
+          example: user.email@gmail.com
+        password:
+          type: string
+          description: User's password
+          example: qwerty12345
+    LogInUserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User's id
+          example: 62c9973dc10addae312d41f3
+        email:
+          type: string
+          description: User's email
+          example: user.email@gmail.com
+        token:
+          type: string
+          description: User's temporary token
+          example: 62c9973dc10addae312d41f3
+    SignUpUserRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: Contact's first name
+          example: John
+        lastName:
+          type: string
+          description: Contact's last name
+          example: Smith
+        email:
+          type: string
+          description: User's email
+          example: user.email@gmail.com
+        password:
+          type: string
+          description: User's password
+          example: qwerty12345
+    SignUpUserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User's id
+          example: 62c9973dc10addae312d41f3
+        firstName:
+          type: string
+          description: Contact's first name
+          example: John
+        lastName:
+          type: string
+          description: Contact's last name
+          example: Smith
+        email:
+          type: string
+          description: User's email
+          example: user.email@gmail.com
     GetContactsResponse:
       type: array
       items:
